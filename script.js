@@ -1,6 +1,28 @@
 // displaying current date and time
 $('#currentDate p').text(moment().format('dddd') + ", " + moment().format('MMMM Do YYYY, h:mm:ss a'));
- 
+
+// function for button to save
+$("button").click(function() {
+    value = $(this).siblings("textarea").val();
+    hourString = $(this).siblings("div").text();
+
+    saveSchedule(hourString, value);
+});
+
+// set calendar day equal to different times and strings
+let calendarDay = {
+    "8 AM": "",
+    "9 AM": "",
+    "10 AM": "",
+    "11 AM": "",
+    "12 AM": "",
+    "1 PM": "",
+    "2 PM": "",
+    "3 PM": "",
+    "4 PM": "",
+    "5 PM": "",
+};
+
 let counter = 1;
 for (const property in calendarDay) {
     let textInfo = "#text-info" + counter;
@@ -20,14 +42,6 @@ for (const property in calendarDay) {
     counter ++;
 }
 
-// function for button to save
-$("button").click(function() {
-    value = $(this).siblings("textarea").val();
-    hourString = $(this).siblings("div").text();
-
-    saveSchedule(hourString, value);
-});
-
 $(document).ready(function(){
     if(!localStorage.getItem('calendarDay')) {
         updateCalendarTasks(calendarDay);
@@ -44,20 +58,6 @@ function updateCalendarTasks(dayObject) {
     })
 }
  
-// set calendar day equal to different times and strings
-let calendarDay = {
-    "8 AM": "",
-    "9 AM": "",
-    "10 AM": "",
-    "11 AM": "",
-    "12 AM": "",
-    "1 PM": "",
-    "2 PM": "",
-    "3 PM": "",
-    "4 PM": "",
-    "5 PM": "",
-};
-
 function hourNumberFromHourString(hourString) {
     switch(hourString) {
       case "8 AM": return 8;
