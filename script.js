@@ -1,3 +1,6 @@
+// displaying current date and time
+$('#currentDate p').text(moment().format('dddd') + ", " + moment().format('MMMM Do YYYY, h:mm:ss a'));
+// set calendar day equal to different times and strings
 let calendarDay = {
     "8 AM": "",
     "9 AM": "",
@@ -11,16 +14,7 @@ let calendarDay = {
     "5 PM": "",
 };
 
-$(document).ready(function(){
-    if(!localStorage.getItem('calendarDay')) {
-        updateCalendarTasks(calendarDay);
-    } else {
-        updateCalendarTasks(JSON.parse(localStorage.getItem('calendarDay')));
-    }
-})
-
-$('#currentDate p').text(moment().format('dddd') + ", " + moment().format('MMMM Do YYYY, h:mm:ss a'));
-
+ 
 let counter = 1;
 for (const property in calendarDay) {
     let textInfo = "#text-info" + counter;
@@ -29,6 +23,7 @@ for (const property in calendarDay) {
     let currentHour =  moment().hour();
     let timeString = $(timeId).text();
     let timeNumber = hourNumberFromHourString(timeString);
+    // add classes to text-info to add color to past present and future
     if (timeNumber < currentHour) {
         $(textInfo).addClass("past");
     } else if (timeNumber > currentHour) {
@@ -38,6 +33,8 @@ for (const property in calendarDay) {
     }
     counter ++;
 }
+
+// function for button to save
 $("button").click(function() {
     value = $(this).siblings("textarea").val();
     hourString = $(this).siblings("div").text();
@@ -45,6 +42,22 @@ $("button").click(function() {
     saveSchedule(hourString, value);
 });
 
+$(document).ready(function(){
+    if(!localStorage.getItem('calendarDay')) {
+        updateCalendarTasks(calendarDay);
+    } else {
+        updateCalendarTasks(JSON.parse(localStorage.getItem('calendarDay')));
+    }
+})
+
+// update calendar
+function updateCalendarTasks(dayObject) {
+    $(".row").each(function(index) {
+        let res = $(this).children("div");
+        $(this).children("textarea").text(dayObject[res.text()]);
+    })
+}
+ 
 function hourNumberFromHourString(hourString) {
     switch(hourString) {
       case "8 AM": return 8;
@@ -59,18 +72,16 @@ function hourNumberFromHourString(hourString) {
       case "5 PM": return 17;
     }
 }
-function loadCorrectDataset() {
-    result = localStorage.getItem('calendarDay')
-    return (result ? result : calendarDay);
-}
 
 function initializeLocalStorage() {
     localStorage.setItem('calendarDay', JSON.stringify(calendarDay));
 };
 
-function saveToLocalStorage(dayObj) {
-    localStorage.setItem('calendarDay', JSON.stringify(dayObj));
+function loadCorrectDataset() {
+    result = localStorage.getItem('calendarDay')
+    return (result ? result : calendarDay);
 }
+
 function saveSchedule(hourString, val) {
     if(!localStorage.getItem('calendarDay')) {
         initializeLocalStorage();
@@ -81,10 +92,6 @@ function saveSchedule(hourString, val) {
   saveToLocalStorage(workHours);
 }
 
-
-function updateCalendarTasks(dayObject) {
-    $(".row").each(function(index) {
-        let res = $(this).children("div");
-        $(this).children("textarea").text(dayObject[res.text()]);
-    })
+function saveToLocalStorage(dayObj) {
+    localStorage.setItem('calendarDay', JSON.stringify(dayObj));
 }
